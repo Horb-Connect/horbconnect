@@ -48,13 +48,10 @@
         </div>
 
         <div class="form-group">
-          <label for="latitude">Breitengrad:</label>
-          <input type="number" id="latitude" name="latitude" step="any" required>
-        </div>
-
-        <div class="form-group">
-          <label for="longitude">Längengrad:</label>
-          <input type="number" id="longitude" name="longitude" step="any" required>
+          <label for="location">Standort:</label>
+          <button type="button" id="selectLocation">Standort auswählen</button>
+          <input type="number" id="latitude" name="latitude" step="any" required readonly>
+          <input type="number" id="longitude" name="longitude" step="any" required readonly>
         </div>
 
         <div class="form-group">
