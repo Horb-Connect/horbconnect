@@ -4,8 +4,11 @@ class EventMap {
     constructor() {
         this.map = null;
         this.markers = new Map();
+        this.isSelectingLocation = false;
+        this.tempMarker = null;
         this.initMap();
         this.loadEvents();
+        this.setupLocationSelection();
     }
 
     initMap() {
@@ -59,6 +62,75 @@ class EventMap {
             this.markers.get(eventId).remove();
             this.markers.delete(eventId);
         }
+    }
+
+    setupLocationSelection() {
+        const selectLocationBtn = document.getElementById('selectLocation');
+        const dialog = document.getElementById('eventDialog');
+        
+        if (selectLocationBtn) {
+            selectLocationBtn.addEventListener('click', () => {
+                this.startLocationSelection();
+                dialog.classList.add('selecting-location');
+            });
+        }
+
+        // Handle map clicks for location selection
+        this.map.on('click', (e) => {
+            if (this.isSelectingLocation) {
+                this.setSelectedLocation(e.latlng);
+            }
+        });
+    }
+
+    startLocationSelection() {
+        this.isSelectingLocation = true;
+        this.map.getContainer().style.cursor = 'crosshair';
+        
+        // Show helper message
+        const helper = document.createElement('div');
+        helper.id = 'map-helper';
+        helper.textContent = 'Klicke auf der Karte, um den Standort auszuwählen';
+        helper.style.position = 'absolute';
+        helper.style.top = '10px';
+        helper.style.left = '50%';
+        helper.style.transform = 'translateX(-50%)';
+        helper.style.backgroundColor = 'white';
+        helper.style.padding = '10px';
+        helper.style.borderRadius = '5px';
+        helper.style.zIndex = '1000';
+        this.map.getContainer().appendChild(helper);
+    }
+
+    setSelectedLocation(latlng) {
+        // Update the form inputs
+        const latInput = document.getElementById('latitude');
+        const lngInput = document.getElementById('longitude');
+        
+        if (latInput && lngInput) {
+            latInput.value = latlng.lat;
+            lngInput.value = latlng.lng;
+        }
+
+        // Update or create the temporary marker
+        if (this.tempMarker) {
+            this.tempMarker.setLatLng(latlng);
+        } else {
+            this.tempMarker = L.marker(latlng).addTo(this.map);
+        }
+
+        // Reset selection mode
+        this.isSelectingLocation = false;
+        this.map.getContainer().style.cursor = '';
+        
+        // Remove helper message
+        const helper = document.getElementById('map-helper');
+        if (helper) {
+            helper.remove();
+        }
+
+        // Remove selecting-location class
+        document.getElementById('eventDialog').classList.remove('selecting-location');
     }
 }
 
