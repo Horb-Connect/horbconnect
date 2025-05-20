@@ -7,21 +7,75 @@
   <script type="module" src="script.js" defer></script>
 </head>
 <body>
-<div id="auth">
-  <h2>Login</h2>
-  <input id="email" type="email" placeholder="Deine E-Mail-Adresse" />
-  <button id="login">Login / Magic Link senden</button>
-</div>
+
+  <!-- Login -->
+  <div id="auth">
+    <h2>Login</h2>
+    <input id="email" type="email" placeholder="Deine E-Mail-Adresse" />
+    <button id="login">Login / Magic Link senden</button>
+  </div>
+
+  <!-- Events -->
   <h1>🚀 HorbConnect</h1>
   <p>Hier findest du spontane Events in deiner Nähe!</p>
-
   <div>
-    <input id="eventInput" placeholder="Was geht ab? z. B. Volleyball um 17 Uhr" />
     <button id="addEvent">Event erstellen</button>
   </div>
 
+  <!-- Events -->
   <ul id="eventList">
     <!-- Events werden hier angezeigt -->
   </ul>
+
+  <dialog id="eventDialog">
+    <form id="eventForm">
+      <h2>Neues Event erstellen</h2>
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="title">Titel:</label>
+          <input type="text" id="title" name="title" required>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Beschreibung:</label>
+          <textarea id="description" name="description" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="latitude">Breitengrad:</label>
+          <input type="number" id="latitude" name="latitude" step="any" required>
+        </div>
+
+        <div class="form-group">
+          <label for="longitude">Längengrad:</label>
+          <input type="number" id="longitude" name="longitude" step="any" required>
+        </div>
+
+        <div class="form-group">
+          <label for="startTime">Start:</label>
+          <input type="datetime-local" id="startTime" name="start_time" required>
+        </div>
+
+        <div class="form-group">
+          <label for="endTime">Ende:</label>
+          <input type="datetime-local" id="endTime" name="end_time" required>
+        </div>
+
+        <div class="form-group">
+          <label for="categorySelect">Kategorie:</label>
+          <select id="categorySelect" name="category" required>
+            <option value="">Wähle eine Kategorie</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="dialog-buttons">
+        <button type="submit">Erstellen</button>
+        <button type="button" id="closeDialog">Abbrechen</button>
+      </div>
+    </form>
+  </dialog>
+
 </body>
 </html>
