@@ -70,8 +70,8 @@ class EventMap {
         
         if (selectLocationBtn) {
             selectLocationBtn.addEventListener('click', () => {
+                dialog.close();
                 this.startLocationSelection();
-                dialog.classList.add('selecting-location');
             });
         }
 
@@ -129,8 +129,9 @@ class EventMap {
             helper.remove();
         }
 
-        // Remove selecting-location class
-        document.getElementById('eventDialog').classList.remove('selecting-location');
+        // Reopen the dialog
+        const dialog = document.getElementById('eventDialog');
+        dialog.showModal();
     }
 }
 
