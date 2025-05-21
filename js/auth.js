@@ -19,7 +19,6 @@ export function initAuth() {
     supabase.auth.getSession().then(({ data: { session } }) => {
         if (!session) {
             // Nicht eingeloggt → nur Login zeigen
-            document.getElementById('eventInput').style.display = 'none'
             document.getElementById('addEvent').style.display = 'none'
             document.getElementById('eventList').style.display = 'none'
         } else {
