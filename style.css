@@ -55,9 +55,16 @@ li {
   font-size: 0.9rem;
 }
 
-.event-date, .event-time {
+.event-date, .event-time, .event-category {
   display: inline-block;
   margin-right: 1rem;
+}
+
+.event-category {
+  background-color: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.9rem;
 }
 
 /* Dialog Styles */

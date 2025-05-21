@@ -72,7 +72,13 @@ export async function loadEvents() {
     // Fetch events from the 'events' table in Supabase where end_time is in the future
     const { data, error } = await supabase
         .from('events')
-        .select('*')
+        .select(`
+            *,
+            categories:category_id (
+                id,
+                name
+            )
+        `)
         .gte('end_time', now)  // Only get events that haven't ended yet
         .order('start_time')   // Order by start time
 
@@ -124,6 +130,23 @@ export async function loadEvents() {
         const timeElement = document.createElement('span')
         timeElement.className = 'event-time'
         timeElement.textContent = `🕒 ${startDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} - ${endDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}`
+
+        // Add category with icon
+        if (event.categories) {
+            const categoryElement = document.createElement('span')
+            categoryElement.className = 'event-category'
+            let categoryIcon = '📌' // Default icon
+            
+            // Set specific icons based on category name
+            if (event.categories.name.toLowerCase().includes('party')) {
+                categoryIcon = '🍺'
+            } else if (event.categories.name.toLowerCase().includes('sport')) {
+                categoryIcon = '🏃'
+            }
+            
+            categoryElement.textContent = `${categoryIcon} ${event.categories.name}`
+            datetimeElement.appendChild(categoryElement)
+        }
 
         // Append all elements
         datetimeElement.appendChild(dateElement)
