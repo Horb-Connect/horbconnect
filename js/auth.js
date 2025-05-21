@@ -17,13 +17,19 @@ export function initAuth() {
 
     // Session prüfen: Zugriff blockieren oder zulassen
     supabase.auth.getSession().then(({ data: { session } }) => {
+        const addEventButton = document.getElementById('addEvent')
+        const eventList = document.getElementById('eventList')
+        
         if (!session) {
             // Nicht eingeloggt → nur Login zeigen
-            document.getElementById('addEvent').style.display = 'none'
-            document.getElementById('eventList').style.display = 'none'
+            if (addEventButton) addEventButton.style.display = 'none'
+            if (eventList) eventList.style.display = 'none'
         } else {
             // Eingeloggt → Login-Bereich ausblenden, Events anzeigen
             document.getElementById('auth').style.display = 'none'
+            if (addEventButton) addEventButton.style.display = 'block'
+            if (eventList) eventList.style.display = 'block'
+            // Events laden und initialisieren
             loadEvents()
         }
     })
