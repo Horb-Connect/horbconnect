@@ -108,10 +108,109 @@ export async function loadEvents() {
         const eventContent = document.createElement('div')
         eventContent.className = 'event-content'
         
+        // Create event header div for title and likes
+        const eventHeader = document.createElement('div')
+        eventHeader.className = 'event-header'
+
         // Create title element
         const titleElement = document.createElement('div')
         titleElement.className = 'event-title'
         titleElement.textContent = event.title
+
+        // Create likes container
+        const likesContainer = document.createElement('div')
+        likesContainer.className = 'event-likes'
+        
+        // Create like button
+        const likeButton = document.createElement('button')
+        likeButton.className = 'like-button'
+        likeButton.innerHTML = '👍'
+        
+        // Create like count
+        const likeCount = document.createElement('span')
+        likeCount.className = 'like-count'
+        likeCount.textContent = '0' // Will be updated when we load likes
+        
+        likesContainer.appendChild(likeButton)
+        likesContainer.appendChild(likeCount)
+        
+        // Add like button click handler
+        likeButton.addEventListener('click', async () => {
+            if (!user) {
+                alert('Bitte melde dich an, um Events zu liken!')
+                return
+            }
+            
+            try {
+                // Check if user already liked this event
+                const { data: existingLike } = await supabase
+                    .from('event_likes')
+                    .select()
+                    .eq('event_id', event.id)
+                    .eq('user_id', user.id)
+                    .maybeSingle()
+                
+                if (existingLike) {
+                    // Unlike
+                    const { error } = await supabase
+                        .from('event_likes')
+                        .delete()
+                        .eq('event_id', event.id)
+                        .eq('user_id', user.id)
+                    
+                    if (error) throw error
+                    likeButton.classList.remove('liked')
+                    const newCount = parseInt(likeCount.textContent) - 1
+                    likeCount.textContent = newCount.toString()
+                } else {
+                    // Like
+                    const { error } = await supabase
+                        .from('event_likes')
+                        .insert([{ event_id: event.id, user_id: user.id }])
+                    
+                    if (error) throw error
+                    likeButton.classList.add('liked')
+                    const newCount = parseInt(likeCount.textContent) + 1
+                    likeCount.textContent = newCount.toString()
+                }
+            } catch (error) {
+                console.error('Error toggling like:', error)
+                alert('Fehler beim Liken des Events')
+            }
+        })
+
+        // Check if user has liked this event and update UI
+        const loadLikeStatus = async () => {
+            try {
+                // Get total likes for this event
+                const { count: totalLikes } = await supabase
+                    .from('event_likes')
+                    .select('*', { count: 'exact' })
+                    .eq('event_id', event.id)
+                
+                likeCount.textContent = totalLikes.toString()
+                
+                // Check if current user has liked
+                if (user) {
+                    const { data: userLike } = await supabase
+                        .from('event_likes')
+                        .select()
+                        .eq('event_id', event.id)
+                        .eq('user_id', user.id)
+                        .maybeSingle()
+                    
+                    if (userLike) {
+                        likeButton.classList.add('liked')
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading likes:', error)
+            }
+        }
+        loadLikeStatus()
+
+        eventHeader.appendChild(titleElement)
+        eventHeader.appendChild(likesContainer)
 
         // Format the dates and times
         const startDate = new Date(event.start_time)
@@ -151,7 +250,7 @@ export async function loadEvents() {
         // Append all elements
         datetimeElement.appendChild(dateElement)
         datetimeElement.appendChild(timeElement)
-        eventContent.appendChild(titleElement)
+        eventContent.appendChild(eventHeader)
         eventContent.appendChild(datetimeElement)
         
         // Add event content to list item
