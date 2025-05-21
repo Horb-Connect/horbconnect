@@ -207,3 +207,16 @@ button[type="button"]:hover {
 #map-helper {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
+/* Header Styles */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.site-logo {
+  height: 40px;
+  width: auto;
+}
