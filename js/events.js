@@ -102,12 +102,34 @@ export async function loadEvents() {
         const eventContent = document.createElement('div')
         eventContent.className = 'event-content'
         
-        // Format the dates
-        const startDate = new Date(event.start_time).toLocaleString('de-DE')
-        const endDate = new Date(event.end_time).toLocaleString('de-DE')
-        
-        // Set event content
-        eventContent.textContent = `${event.title} (${startDate} - ${endDate})`
+        // Create title element
+        const titleElement = document.createElement('div')
+        titleElement.className = 'event-title'
+        titleElement.textContent = event.title
+
+        // Format the dates and times
+        const startDate = new Date(event.start_time)
+        const endDate = new Date(event.end_time)
+
+        // Create datetime container
+        const datetimeElement = document.createElement('div')
+        datetimeElement.className = 'event-datetime'
+
+        // Add date
+        const dateElement = document.createElement('span')
+        dateElement.className = 'event-date'
+        dateElement.textContent = `📅 ${startDate.toLocaleDateString('de-DE')}`
+
+        // Add time
+        const timeElement = document.createElement('span')
+        timeElement.className = 'event-time'
+        timeElement.textContent = `🕒 ${startDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} - ${endDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}`
+
+        // Append all elements
+        datetimeElement.appendChild(dateElement)
+        datetimeElement.appendChild(timeElement)
+        eventContent.appendChild(titleElement)
+        eventContent.appendChild(datetimeElement)
         
         // Add event content to list item
         li.appendChild(eventContent)
@@ -199,6 +221,6 @@ export async function loadCategories() {
         // If any error occurs, log it to the console
         console.error('Error loading categories:', error.message)
     }
-} 
+}
 
 
