@@ -29,7 +29,13 @@ class EventMap {
 
             if (error) throw error;
 
-            events.forEach(event => this.addEventMarker(event));
+            const currentTime = new Date().getTime();
+            events.forEach(event => {
+                const eventEndTime = new Date(event.end_time).getTime();
+                if (eventEndTime >= currentTime) {
+                    this.addEventMarker(event);
+                }
+            });
         } catch (error) {
             console.error('Error loading events:', error);
         }
@@ -142,8 +148,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Listen for new events
     supabase
         .channel('events')
-        .on('INSERT', payload => eventMap.addEventMarker(payload.new))
-        .on('UPDATE', payload => eventMap.updateEvent(payload.new))
+        .on('INSERT', payload => {
+            const currentTime = new Date().getTime();
+            const eventEndTime = new Date(payload.new.end_time).getTime();
+            if (eventEndTime >= currentTime) {
+                eventMap.addEventMarker(payload.new);
+            }
+        })
+        .on('UPDATE', payload => {
+            const currentTime = new Date().getTime();
+            const eventEndTime = new Date(payload.new.end_time).getTime();
+            if (eventEndTime >= currentTime) {
+                eventMap.updateEvent(payload.new);
+            } else {
+                eventMap.removeEvent(payload.new.id);
+            }
+        })
         .on('DELETE', payload => eventMap.removeEvent(payload.old.id))
         .subscribe();
 });
