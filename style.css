@@ -103,6 +103,13 @@ li {
   font-size: 0.9rem;
 }
 
+.event-description {
+  margin: 0.5rem 0;
+  color: #444;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+
 /* Dialog Styles */
 dialog {
   padding: 2rem;

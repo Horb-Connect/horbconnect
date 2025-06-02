@@ -133,85 +133,15 @@ export async function loadEvents() {
         
         likesContainer.appendChild(likeButton)
         likesContainer.appendChild(likeCount)
-        
-        // Add like button click handler
-        likeButton.addEventListener('click', async () => {
-            if (!user) {
-                alert('Bitte melde dich an, um Events zu liken!')
-                return
-            }
-            
-            try {
-                // Check if user already liked this event
-                const { data: existingLike } = await supabase
-                    .from('event_likes')
-                    .select()
-                    .eq('event_id', event.id)
-                    .eq('user_id', user.id)
-                    .maybeSingle()
-                
-                if (existingLike) {
-                    // Unlike
-                    const { error } = await supabase
-                        .from('event_likes')
-                        .delete()
-                        .eq('event_id', event.id)
-                        .eq('user_id', user.id)
-                    
-                    if (error) throw error
-                    likeButton.classList.remove('liked')
-                    const newCount = parseInt(likeCount.textContent) - 1
-                    likeCount.textContent = newCount.toString()
-                } else {
-                    // Like
-                    const { error } = await supabase
-                        .from('event_likes')
-                        .insert([{ event_id: event.id, user_id: user.id }])
-                    
-                    if (error) throw error
-                    likeButton.classList.add('liked')
-                    const newCount = parseInt(likeCount.textContent) + 1
-                    likeCount.textContent = newCount.toString()
-                }
-            } catch (error) {
-                console.error('Error toggling like:', error)
-                alert('Fehler beim Liken des Events')
-            }
-        })
-
-        // Check if user has liked this event and update UI
-        const loadLikeStatus = async () => {
-            try {
-                // Get total likes for this event
-                const { count: totalLikes } = await supabase
-                    .from('event_likes')
-                    .select('*', { count: 'exact' })
-                    .eq('event_id', event.id)
-                
-                likeCount.textContent = totalLikes.toString()
-                
-                // Check if current user has liked
-                if (user) {
-                    const { data: userLike } = await supabase
-                        .from('event_likes')
-                        .select()
-                        .eq('event_id', event.id)
-                        .eq('user_id', user.id)
-                        .maybeSingle()
-                    
-                    if (userLike) {
-                        likeButton.classList.add('liked')
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading likes:', error)
-            }
-        }
-        loadLikeStatus()
 
         eventHeader.appendChild(titleElement)
         eventHeader.appendChild(likesContainer)
 
+        // Add description
+        const descriptionElement = document.createElement('div')
+        descriptionElement.className = 'event-description'
+        descriptionElement.textContent = event.description
+        
         // Format the dates and times
         const startDate = new Date(event.start_time)
         const endDate = new Date(event.end_time)
@@ -251,6 +181,7 @@ export async function loadEvents() {
         datetimeElement.appendChild(dateElement)
         datetimeElement.appendChild(timeElement)
         eventContent.appendChild(eventHeader)
+        eventContent.appendChild(descriptionElement)
         eventContent.appendChild(datetimeElement)
         
         // Add event content to list item
