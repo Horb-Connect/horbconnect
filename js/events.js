@@ -57,11 +57,11 @@ export function initEvents() {
             if (error) throw error
             
             eventForm.reset()
-            closeDialogWithAnimation(eventDialog)
+            eventDialog.close()
             loadEvents()
         } catch (error) {
             console.error('Error creating event:', error.message)
-            alert('Error creating event. Please try again.')
+            alert('Fehler beim Erstellen des Events: ' + error.message)
         } finally {
             submitButton.classList.remove('loading')
             submitButton.disabled = false
