@@ -6,9 +6,8 @@ async function init() {
     initAuth()
     initEvents()
     
-    // Dancing Background initialisieren
-    const { initBackground } = await import('./js/dancing-background.js')
-    initBackground()
+    // Particles.js initialisieren
+    await import('./js/particles-config.js')
 }
 
 window.addEventListener('load', () => {
