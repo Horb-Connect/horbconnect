@@ -12,6 +12,9 @@ export function initEvents() {
     const closeDialogButton = document.getElementById('closeDialog')
     const eventForm = document.getElementById('eventForm')
 
+    // Initialize filter buttons
+    initializeFilters()
+
     // Add click event listener to the "Add Event" button
     addEventButton?.addEventListener('click', () => {
         // Load fresh categories when dialog opens
@@ -353,9 +356,74 @@ export async function loadEvents() {
         
         // Observe elements for scroll animations
         observeElements()
+        
+        // Reapply current filter
+        if (currentFilter !== 'all') {
+            applyFilter(currentFilter)
+        }
     } catch (error) {
         console.error('Error loading events:', error.message)
     }
+}
+
+// Current active filter
+let currentFilter = 'all';
+
+// Initialize filter buttons
+function initializeFilters() {
+    const filterBar = document.createElement('div')
+    filterBar.className = 'filter-bar'
+    
+    const filters = [
+        { id: 'all', text: 'Alle' },
+        { id: 'party', text: 'Party' },
+        { id: 'sport', text: 'Sport' }
+    ]
+    
+    filters.forEach(filter => {
+        const button = document.createElement('button')
+        button.className = `filter-button ${filter.id === currentFilter ? 'active' : ''}`
+        button.textContent = filter.text
+        button.onclick = () => {
+            // Remove active class from all buttons
+            filterBar.querySelectorAll('.filter-button').forEach(btn => 
+                btn.classList.remove('active'))
+            // Add active class to clicked button
+            button.classList.add('active')
+            // Apply filter
+            applyFilter(filter.id)
+        }
+        filterBar.appendChild(button)
+    })
+    
+    // Insert filter bar before event list
+    const eventList = document.getElementById('eventList')
+    eventList.parentNode.insertBefore(filterBar, eventList)
+}
+
+// Apply filter to events
+function applyFilter(filterId) {
+    currentFilter = filterId
+    const events = document.querySelectorAll('#eventList li')
+    
+    events.forEach(event => {
+        const category = event.querySelector('.event-category')
+        const categoryName = category ? category.getAttribute('data-category') : ''
+        
+        if (filterId === 'all' || categoryName.includes(filterId)) {
+            event.style.display = ''
+            event.classList.remove('event-filtered-out')
+            event.classList.add('event-filtered-in')
+        } else {
+            event.classList.remove('event-filtered-in')
+            event.classList.add('event-filtered-out')
+            setTimeout(() => {
+                if (event.classList.contains('event-filtered-out')) {
+                    event.style.display = 'none'
+                }
+            }, 400) // Match the animation duration
+        }
+    })
 }
 
 /**

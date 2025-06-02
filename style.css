@@ -762,4 +762,108 @@ button.loading {
   }
 }
 
+/* Filter Bar Styles */
+.filter-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: var(--radius);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.filter-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 100px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.filter-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.filter-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-colored);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.filter-button.active {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-colored);
+}
+
+.filter-button.active::before {
+  opacity: 1;
+}
+
+/* Filter Animation for Events */
+.event-filtered-out {
+  animation: filterOut 0.4s ease-out forwards;
+}
+
+.event-filtered-in {
+  animation: filterIn 0.4s ease-out forwards;
+}
+
+@keyframes filterOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
+    display: none;
+  }
+}
+
+@keyframes filterIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Mobile Optimization for Filter Bar */
+@media (max-width: 640px) {
+  .filter-bar {
+    padding: 0.75rem;
+    margin: 0.5rem 0 1.5rem 0;
+    justify-content: flex-start;
+  }
+
+  .filter-button {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.9rem;
+  }
+}
+
 /* Existing code... */
