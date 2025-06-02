@@ -235,14 +235,16 @@ export async function loadEvents() {
             const categoryElement = document.createElement('span')
             categoryElement.className = 'event-category'
             let categoryIcon = '📌' // Default icon
+            const categoryName = event.categories.name.toLowerCase()
             
             // Set specific icons based on category name
-            if (event.categories.name.toLowerCase().includes('party')) {
-                categoryIcon = '🍺'
-            } else if (event.categories.name.toLowerCase().includes('sport')) {
+            if (categoryName.includes('party')) {
+                categoryIcon = '🎉'
+            } else if (categoryName.includes('sport')) {
                 categoryIcon = '🏃'
             }
             
+            categoryElement.setAttribute('data-category', categoryName)
             categoryElement.textContent = `${categoryIcon} ${event.categories.name}`
             datetimeElement.appendChild(categoryElement)
         }
