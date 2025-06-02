@@ -16,23 +16,19 @@ export function initEvents() {
     addEventButton?.addEventListener('click', () => {
         // Load fresh categories when dialog opens
         loadCategories()
-        // Show the dialog with animation
+        // Show the dialog
         eventDialog.showModal()
-        // Add initial animation class
-        requestAnimationFrame(() => {
-            eventDialog.classList.add('animate-in')
-        })
     })
 
     // Close dialog when clicking the close button
     closeDialogButton?.addEventListener('click', () => {
-        closeDialogWithAnimation(eventDialog)
+        eventDialog.close()
     })
 
     // Close dialog when clicking backdrop
     eventDialog?.addEventListener('click', (e) => {
         if (e.target === eventDialog) {
-            closeDialogWithAnimation(eventDialog)
+            eventDialog.close()
         }
     })
 
@@ -76,14 +72,7 @@ export function initEvents() {
     loadEvents()
 }
 
-// Helper function to close dialog with animation
-function closeDialogWithAnimation(dialog) {
-    dialog.classList.add('closing')
-    setTimeout(() => {
-        dialog.close()
-        dialog.classList.remove('closing')
-    }, 300)
-}
+// Dialog animations are now handled through CSS only
 
 // Helper function to create loading skeletons
 function createEventSkeleton() {
